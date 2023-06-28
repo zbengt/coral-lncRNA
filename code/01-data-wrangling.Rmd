@@ -1,0 +1,40 @@
+---
+title: "01-data-wrangling"
+author: "Zach Bengtsson"
+date: "2023-06-21"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Acropora pulchra data
+
+Get data from reef genomics genome assembly (GFF) and scaffolds (FASTA)...
+```{bash genome download}
+wget -P /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/data \
+     https://gannet.fish.washington.edu/seashell/snaps/GCF_013753865.1_Amil_v2.1_genomic.fna
+     
+```
+
+```{bash genome download}
+wget -P /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/data http://gannet.fish.washington.edu/seashell/snaps/GCF_013753865.1_Amil_v2.1_genomic.gff
+
+```
+
+Download the trimmed RNA-seq data from gannet...
+```{bash rna-seq data}
+wget -r \
+--no-check-certificate \
+--quiet \
+--no-directories --no-parent \
+-P /home/shared/8TB_HDD_01/apul/trimmed \
+-A *fastq.gz \
+https://gannet.fish.washington.edu/Atumefaciens/20230519-E5_coral-fastqc-fastp-multiqc-RNAseq/A_pulchra/trimmed/
+```
+
+Check to make sure all 10 trimmed fastq.gz files are their for paired data...
+```{bash}
+ls /home/shared/8TB_HDD_01/apul/trimmed
+```
