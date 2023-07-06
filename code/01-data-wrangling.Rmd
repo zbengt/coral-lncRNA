@@ -38,3 +38,20 @@ Check to make sure all 10 trimmed fastq.gz files are their for paired data...
 ```{bash}
 ls /home/shared/8TB_HDD_01/apul/trimmed
 ```
+
+## Pocillopora meandrina data
+
+Download the reference FASTA and GFF
+```{bash}
+wget -P /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/data \
+     https://owl.fish.washington.edu/halfshell/genomic-databank/Pocillopora_meandrina_HIv1.assembly.fasta
+     
+```
+
+```{bash}
+wget -P /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/data \
+    https://owl.fish.washington.edu/halfshell/genomic-databank/Pocillopora_meandrina_HIv1.genes.gff3
+     
+```
+
+

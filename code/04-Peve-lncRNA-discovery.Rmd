@@ -33,9 +33,9 @@ find /home/shared/8TB_HDD_01/peve/bam/*bam \
 | xargs basename -s .bam | xargs -I{} \
 /home/shared/stringtie-2.2.1.Linux_x86_64/stringtie \
 -p 8 \
--G ../data/GCF_013753865.1_Amil_v2.1_genomic.gff \
--o /home/shared/8TB_HDD_01/apul/stringtie-assembly/{}.gtf \
-/home/shared/8TB_HDD_01/apul/bam/{}.bam \
+-G ../data/Porites_evermanni_v1.annot.gff \
+-o /home/shared/8TB_HDD_01/peve/stringtie-assembly/{}.gtf \
+/home/shared/8TB_HDD_01/peve/bam/{}.bam \
 ```
 
 Use StringTie merge to merge all the individual GTF files into a single merged GTF file...
