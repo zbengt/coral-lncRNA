@@ -1,0 +1,116 @@
+---
+title: "03-porites-mapping"
+author: "Zach Bengtsson"
+date: "2023-06-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Porites lobata
+
+Data wrangling...
+Porites lobata FASTA download
+```{bash}
+wget -P /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/data \
+     https://www.genoscope.cns.fr/corals/data/Porites_lobata_v3.fa
+
+```
+
+Porites evermanni FASTA download...
+```{bash}
+wget -P /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/data \
+     https://gannet.fish.washington.edu/seashell/snaps/Porites_evermanni_v1.fa
+
+```
+
+Download all porites RNA-seq data...
+```{bash}
+wget -r \
+--no-check-certificate \
+--quiet \
+--no-directories --no-parent \
+-P /home/shared/8TB_HDD_01/peve/trimmed \
+-A *fastq.gz \
+https://gannet.fish.washington.edu/Atumefaciens/20230519-E5_coral-fastqc-fastp-multiqc-RNAseq/P_evermanni/trimmed/
+```
+
+Porites evermanni GFF download...
+```{bash}
+wget -P /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/data \
+     https://gannet.fish.washington.edu/seashell/snaps/Porites_evermanni_v1.annot.gff
+
+```
+
+HISAT2 build to create an index for P lobata...
+
+```{bash hisat-build}
+#FASTA file path input
+ref_genome="/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/data/Porites_lobata_v3.fa"
+index="/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/Plob/Plob.index"
+
+/home/shared/hisat2-2.2.1/hisat2-build \
+-f "$ref_genome" \
+"$index"
+```
+
+HISAT2 build to create an index for P evermanni...
+
+```{bash hisat-build}
+#FASTA file path input
+ref_genome="/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/data/Porites_evermanni_v1.fa"
+index="/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/Peve/Peve.index"
+
+/home/shared/hisat2-2.2.1/hisat2-build \
+-f "$ref_genome" \
+"$index"
+```
+
+HISAT2 alignment for Plob...
+```{bash}
+find /home/shared/8TB_HDD_01/peve/trimmed/*gz \
+| xargs basename -s -S1-TP2_R1_001.fastp-trim.20230519.fastq.gz | xargs -I{} \
+/home/shared/hisat2-2.2.1/hisat2 \
+-x /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/Plob/Plob.index \
+-p 8 \
+-1 /home/shared/8TB_HDD_01/peve/trimmed/{}-S1-TP2_R1_001.fastp-trim.20230519.fastq.gz \
+-2 /home/shared/8TB_HDD_01/peve/trimmed/{}-S1-TP2_R2_001.fastp-trim.20230519.fastq.gz \
+-S /home/shared/8TB_HDD_01/peve/plob-sam/{}.sam
+```
+
+```{bash}
+find /home/shared/8TB_HDD_01/peve/trimmed/*gz \
+| xargs basename -s -S1-TP2_R1_001.fastp-trim.20230519.fastq.gz | xargs -I{} \
+/home/shared/hisat2-2.2.1/hisat2 \
+-x /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/Peve/Peve.index \
+-p 20 \
+-1 /home/shared/8TB_HDD_01/peve/trimmed/{}-S1-TP2_R1_001.fastp-trim.20230519.fastq.gz \
+-2 /home/shared/8TB_HDD_01/peve/trimmed/{}-S1-TP2_R2_001.fastp-trim.20230519.fastq.gz \
+-S /home/shared/8TB_HDD_01/peve/peve-sam/{}.sam
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
