@@ -149,11 +149,6 @@ awk '$8 == "noncoding" {print $1}' /home/shared/8TB_HDD_02/zbengt/github/coral-l
 
 ```{bash}
 # Filter out transcripts with coding potential
-awk '$8 == "noncoding" {print $1}' /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/output/apul_merged_cpc2_results.txt > /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/output/apul_noncoding_transcripts_ids.txt; grep -Fwf /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/output/apul_noncoding_transcripts_ids.txt /home/shared/8TB_HDD_01/apul/get-fasta/merged_lncRNA_candidates.fasta > /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/output/apul_merged_final_lncRNAs.gtf
-
-```
-```{bash}
-# Filter out transcripts with coding potential
 awk '$8 == "noncoding" {print $1}' /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/apul_merged_cpc2_results.txt > /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/apul_noncoding_transcripts_ids.txt
 grep -Fwf /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/apul_noncoding_transcripts_ids.txt /home/shared/8TB_HDD_01/apul/get-fasta/merged_lncRNA_candidates.fasta > /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/apul_merged_final_lncRNAs.gtf
 ```
