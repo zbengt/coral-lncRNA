@@ -54,4 +54,14 @@ wget -P /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/data \
      
 ```
 
+Download the trimmed RNA-seq data from gannet...
+```{bash rna-seq data}
+wget -r \
+--no-check-certificate \
+--quiet \
+--no-directories --no-parent \
+-P /home/shared/8TB_HDD_01/pmea/trimmed \
+-A *fastq.gz \
+https://gannet.fish.washington.edu/Atumefaciens/20230519-E5_coral-fastqc-fastp-multiqc-RNAseq/P_meandrina/trimmed/
+```
 
