@@ -123,3 +123,43 @@ head ~/github/coral-lncRNA/ouput/pmea_merged_final_lncRNAs.gtf
 
 tail ~/github/coral-lncRNA/ouput/pmea_merged_final_lncRNAs.gtf
 ```
+
+```{r}
+# Define the paths to the input files
+gtf_file <- "/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/pmea_merged_final_lncRNAs.gtf"
+fasta_file <- "/home/shared/8TB_HDD_01/pmea/get-fasta/pmea_merged_lncRNA_candidates.fasta"
+output_file <- "/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/pmea_final_lncRNAs.fasta"
+
+# Read the transcript IDs from the GTF file
+gtf_lines <- readLines(gtf_file)
+transcript_ids <- gsub("^>transcript::([^:]+).*", "\\1", gtf_lines)
+
+# Read the FASTA file
+fasta_lines <- readLines(fasta_file)
+
+# Filter the FASTA sequences based on the transcript IDs
+filtered_sequences <- character()
+current_id <- NULL
+
+for (line in fasta_lines) {
+  if (substr(line, 1, 1) == ">") {
+    current_id <- gsub("^>transcript::([^:]+).*", "\\1", line)
+    if (current_id %in% transcript_ids) {
+      filtered_sequences <- c(filtered_sequences, line)
+    }
+  } else {
+    if (!is.null(current_id) && current_id %in% transcript_ids) {
+      filtered_sequences <- c(filtered_sequences, line)
+    }
+  }
+}
+
+# Write the filtered sequences to a new FASTA file
+writeLines(filtered_sequences, output_file)
+
+```
+
+```{bash}
+head /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/pmea_final_lncRNAs.fasta
+```
+
