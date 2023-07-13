@@ -119,7 +119,7 @@ grep -Fwf /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/pmea_noncodin
 ```
 
 ```{bash}
-head ~/github/coral-lncRNA/ouput/peve_merged_final_lncRNAs.gtf
+head ~/github/coral-lncRNA/ouput/pmea_merged_final_lncRNAs.gtf
 
-tail ~/github/coral-lncRNA/ouput/peve_merged_final_lncRNAs.gtf
+tail ~/github/coral-lncRNA/ouput/pmea_merged_final_lncRNAs.gtf
 ```
