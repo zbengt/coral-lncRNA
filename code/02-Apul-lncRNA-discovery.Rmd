@@ -11,17 +11,6 @@ knitr::opts_chunk$set(echo = TRUE)
 
 # lncRNA Discovery for Acropora pulchra
 
----
-title: "07-scale-up"
-author: "Zach Bengtsson"
-date: "2023-04-25"
-output: html_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
 HISAT2 build to create an index for the Acropora millipora FASTA file...
 
 ```{bash hisat-build}
@@ -45,25 +34,6 @@ find /home/shared/8TB_HDD_01/apul/trimmed/*gz \
 -1 /home/shared/8TB_HDD_01/apul/trimmed/{}_R1_001.fastp-trim.20230519.fastq.gz \
 -2 /home/shared/8TB_HDD_01/apul/trimmed/{}_R2_001.fastp-trim.20230519.fastq.gz \
 -S /home/shared/8TB_HDD_01/apul/sam/{}.sam
-```
-
-Path inputs version (not tested but I think I got it working)...
-``` {bash hisat}
-# Path of trimmed RNA-seq fastq.gz files
-trimmed_files="/home/shared/8TB_HDD_01/apul/trimmed"
-# Path to hisat index
-index="/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/Amil.index"
-# Path to output files in SAM format
-sam_files="/home/shared/8TB_HDD_01/apul/sam"
-
-find "$trimmed_files" -name "*gz" \
-| xargs basename -s _R1_001.fastp-trim.20230519.fastq.gz | xargs -I{} \
-/home/shared/hisat2-2.2.1/hisat2 \
--x "$index" \
--p 20 \
--1 "$timmed_files/{}_R1_001.fastp-trim.20230519.fastq.gz" \
--2 "$timmed_files/{}_R2_001.fastp-trim.20230519.fastq.gz" \
--S "$sam_files/{}.sam"
 ```
 
 Samtools to convert the SAM files output from the previous HISAT2 command into sorted BAM files...
@@ -144,41 +114,12 @@ python /home/shared/CPC2_standalone-1.0.1/bin/CPC2.py -i /home/shared/8TB_HDD_01
 
 ```{bash}
 # Filter out transcripts with coding potential
-awk '$8 == "noncoding" {print $1}' /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/output/apul_merged_cpc2_results.txt > /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/output/apul_noncoding_transcripts_ids.txt grep -Fwf /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/output/apul_noncoding_transcripts_ids.txt /home/shared/8TB_HDD_01/apul/get-fasta/merged_lncRNA_candidates.fasta > /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/output/apul_merged_final_lncRNAs.gtf
-```
-
-```{bash}
-# Filter out transcripts with coding potential
 awk '$8 == "noncoding" {print $1}' /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/apul_merged_cpc2_results.txt > /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/apul_noncoding_transcripts_ids.txt
 grep -Fwf /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/apul_noncoding_transcripts_ids.txt /home/shared/8TB_HDD_01/apul/get-fasta/merged_lncRNA_candidates.fasta > /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/apul_merged_final_lncRNAs.gtf
-```
-
-
-```{bash}
-grep -c "^>" /home/shared/8TB_HDD_01/pver/bedtools-output/merged_lncRNA_candidates.fasta
 ```
 
 ```{bash}
 head ~/github/zach-lncRNA/output/merged_final_lncRNAs.gtf
 
 tail ~/github/zach-lncRNA/output/merged_final_lncRNAs.gtf
-```
-
-```{bash}
-grep -c "^>" ~/github/zach-lncRNA/output/merged_final_lncRNAs.gtf
-```
-```{bash}
-head /home/shared/8TB_HDD_01/pver/gffcompare-output/merged.combined.gtf
-```
-```{bash}
-wc -l /home/shared/8TB_HDD_01/pver/gffcompare-output/gffcompare_merged.annotated.gtf
-wc -l ../data/Pver_genome_assembly_v1.0-valid.gtf
-wc -l /home/shared/8TB_HDD_01/pver/stringtie-merge-output/stringtie_merged.gtf
-```
-
-
-
-```{bash}
-/home/shared/samtools-1.12/samtools \
-view -h /home/shared/8TB_HDD_01/pver/samtools-output/E6-valid_sorted.bam | grep -wFf ~/github/zach-lncRNA/output/sig_diff_IDs.txt | view -b - > ~/github/zach-lncRNA/output/E6_sig_transcripts.bam
 ```
