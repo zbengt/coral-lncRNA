@@ -1,0 +1,87 @@
+---
+title: "06-pocillopora-alignment"
+author: "Zach Bengtsson"
+date: "2023-07-13"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Examining alignment of Pocillopora samples with P. verrucosa and P. effusa references
+
+## P. verrucosa
+
+HISAT2 build to create an index for the FASTA file...
+
+```{bash hisat-build}
+#FASTA file path input
+ref_genome="/home/shared/8TB_HDD_02/zbengt/github/zach-lncRNA/data/Pver_genome_assembly_v1.0.fasta"
+index="/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/Pver/Pver.index"
+
+/home/shared/hisat2-2.2.1/hisat2-build \
+-f "$ref_genome" \
+"$index"
+```
+
+HISAT2 to align paired-end RNA-Seq reads to the index...
+
+```{bash}
+find /home/shared/8TB_HDD_01/pmea/trimmed/*gz \
+| xargs basename -s _R1_001.fastp-trim.20230519.fastq.gz | xargs -I{} \
+/home/shared/hisat2-2.2.1/hisat2 \
+-x /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/Pver/Pver.index \
+-p 20 \
+-1 /home/shared/8TB_HDD_01/pmea/trimmed/{}_R1_001.fastp-trim.20230519.fastq.gz \
+-2 /home/shared/8TB_HDD_01/pmea/trimmed/{}_R2_001.fastp-trim.20230519.fastq.gz \
+-S /home/shared/8TB_HDD_02/pver2/sam/{}.sam
+```
+
+## P. effusa
+
+Grab P. effusa genome...
+
+```{bash}
+wget -P /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/data \
+    https://www.genoscope.cns.fr/corals/data/Pocillopora_effusa_v3.fa
+     
+```
+
+HISAT2 build to create an index for the FASTA file...
+
+```{bash hisat-build}
+#FASTA file path input
+ref_genome="/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/data/Pocillopora_effusa_v3.fa"
+index="/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/Peff/Peff.index"
+
+/home/shared/hisat2-2.2.1/hisat2-build \
+-f "$ref_genome" \
+"$index"
+```
+
+HISAT2 to align paired-end RNA-Seq reads to the index...
+
+```{bash}
+find /home/shared/8TB_HDD_01/pmea/trimmed/*gz \
+| xargs basename -s _R1_001.fastp-trim.20230519.fastq.gz | xargs -I{} \
+/home/shared/hisat2-2.2.1/hisat2 \
+-x /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/Pver/Pver.index \
+-p 20 \
+-1 /home/shared/8TB_HDD_01/pmea/trimmed/{}_R1_001.fastp-trim.20230519.fastq.gz \
+-2 /home/shared/8TB_HDD_01/pmea/trimmed/{}_R2_001.fastp-trim.20230519.fastq.gz \
+-S /home/shared/8TB_HDD_02/pver2/sam/{}.sam
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
