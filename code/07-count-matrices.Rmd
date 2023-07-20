@@ -1,0 +1,55 @@
+---
+title: "07-count-matrices"
+author: "Zach Bengtsson"
+date: "2023-07-20"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# P. evermanni
+
+## kallisto index
+
+Creating an index for kallisto abundance...
+```{bash}
+/home/shared/kallisto/kallisto \
+index -i ~/github/coral-lncRNA/ouput/Peve/peve-kallisto/index/peve-kallisto.index \
+~/github/coral-lncRNA/data/Porites_evermanni_v1.fa
+```
+
+## kallisto abundance
+
+Transcript quantification using the Kallisto software on multiple pairs of FASTQ files…
+```{bash}
+find /home/shared/8TB_HDD_01/peve/trimmed/*gz \
+| xargs basename -s _R1_001.fastp-trim.20230519.fastq.gz | xargs -I{} /home/shared/kallisto/kallisto \
+quant -i ~/github/coral-lncRNA/ouput/Peve/peve-kallisto/index/peve-kallisto.index \
+-o /home/shared/8TB_HDD_02/Peve/peve-kallisto/output/{} \
+-t 20 \
+/home/shared/8TB_HDD_01/peve/trimmed/{}_R1_001.fastp-trim.20230519.fastq.gz \
+/home/shared/8TB_HDD_01/peve/trimmed/{}_R2_001.fastp-trim.20230519.fastq.gz \
+2>&1 | tee /home/shared/8TB_HDD_02/Peve/peve-kallisto/{}.out
+```
+
+## trinity count matrix
+
+Generate a count matrix from Kallisto abundance estimates for all transcripts in RNA-seq data…
+```{bash}
+perl /home/shared/trinityrnaseq-v2.12.0/util/abundance_estimates_to_matrix.pl \
+--est_method kallisto \
+--gene_trans_map none \
+--out_prefix ~/github/coral-lncRNA/ouput/peve_count_matrix \
+--name_sample_by_basedir \
+/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/*/abundance.tsv
+```
+
+## lncRNA count matrix
+
+Filter to get lncRNA only count matrix...
+
+
+
+
