@@ -27,7 +27,7 @@ Transcript quantification using the Kallisto software on multiple pairs of FASTQ
 find /home/shared/8TB_HDD_01/peve/trimmed/*gz \
 | xargs basename -s _R1_001.fastp-trim.20230519.fastq.gz | xargs -I{} /home/shared/kallisto/kallisto \
 quant -i ~/github/coral-lncRNA/ouput/Peve/peve-kallisto/index/peve-kallisto.index \
--o /home/shared/8TB_HDD_02/Peve/peve-kallisto/output/{} \
+-o /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/Peve/peve-kallisto/output/{} \
 -t 20 \
 /home/shared/8TB_HDD_01/peve/trimmed/{}_R1_001.fastp-trim.20230519.fastq.gz \
 /home/shared/8TB_HDD_01/peve/trimmed/{}_R2_001.fastp-trim.20230519.fastq.gz \
