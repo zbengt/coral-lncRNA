@@ -34,6 +34,19 @@ quant -i ~/github/coral-lncRNA/ouput/Peve/peve-kallisto/index/peve-kallisto.inde
 2>&1 | tee /home/shared/8TB_HDD_02/Peve/peve-kallisto/{}.out
 ```
 
+Re-run this way...
+```{bash}
+find /home/shared/8TB_HDD_01/peve/trimmed/*_R1_001.fastp-trim.20230519.fastq.gz \
+| xargs -n 1 basename -s _R1_001.fastp-trim.20230519.fastq.gz \
+| xargs -I{} /home/shared/kallisto/kallisto quant \
+  -i ~/github/coral-lncRNA/ouput/Peve/peve-kallisto/index/peve-kallisto.index \
+  -o /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/Peve/peve-kallisto/output/{}_output \
+  -t 20 \
+  /home/shared/8TB_HDD_01/peve/trimmed/{}_R1_001.fastp-trim.20230519.fastq.gz \
+  /home/shared/8TB_HDD_01/peve/trimmed/{}_R2_001.fastp-trim.20230519.fastq.gz \
+2>&1 | tee /home/shared/8TB_HDD_02/Peve/peve-kallisto/{}.out
+```
+
 ## trinity count matrix
 
 Generate a count matrix from Kallisto abundance estimates for all transcripts in RNA-seq data…
@@ -43,13 +56,159 @@ perl /home/shared/trinityrnaseq-v2.12.0/util/abundance_estimates_to_matrix.pl \
 --gene_trans_map none \
 --out_prefix ~/github/coral-lncRNA/ouput/peve_count_matrix \
 --name_sample_by_basedir \
-/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/*/abundance.tsv
+/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/Peve/peve-kallisto/output/*/abundance.tsv
 ```
 
 ## lncRNA count matrix
 
 Filter to get lncRNA only count matrix...
+```{bash}
+# Specify the transcript ID file (GTF format)
+transcript_id_file="/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/peve_merged_final_lncRNAs.gtf"
 
+# Specify the count matrix file
+count_matrix_file="/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/peve_count_matrix.isoform.counts.matrix"
 
+# Specify the output file for the filtered count matrix
+filtered_count_matrix_file="/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/peve_lncRNA_count_matrix.tsv"
 
+# Extract the middle part of the transcript IDs from the GTF file
+grep -oP "(?<=transcript::)[^:]*" "$transcript_id_file" > "tmp_transcript_ids.txt"
 
+# Store the first line (column headings) of the count matrix file
+head -n 1 "$count_matrix_file" > "$filtered_count_matrix_file"
+
+# Filter the count matrix using the extracted transcript IDs, starting from the second line
+awk 'NR==FNR{a[$0];next} ($1 in a)' "tmp_transcript_ids.txt" <(tail -n +2 "$count_matrix_file") >> "$filtered_count_matrix_file"
+
+# Remove the temporary transcript ID file
+rm "tmp_transcript_ids.txt"
+```
+
+# A. pulchra
+
+## kallisto index
+
+Creating an index for kallisto abundance...
+```{bash}
+/home/shared/kallisto/kallisto \
+index -i ~/github/coral-lncRNA/ouput/Apul/apul-kallisto/index/apul-kallisto.index \
+~/github/coral-lncRNA/data/GCF_013753865.1_Amil_v2.1_genomic.fna
+```
+
+## kallisto abundance
+
+Transcript quantification using the Kallisto software on multiple pairs of FASTQ files…
+```{bash}
+find /home/shared/8TB_HDD_01/apul/trimmed/*_R1_001.fastp-trim.20230519.fastq.gz \
+| xargs -n 1 basename -s _R1_001.fastp-trim.20230519.fastq.gz \
+| xargs -I{} /home/shared/kallisto/kallisto quant \
+  -i ~/github/coral-lncRNA/ouput/Apul/apul-kallisto/index/apul-kallisto.index \
+  -o /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/Apul/apul-kallisto/output/{}_output \
+  -t 20 \
+  /home/shared/8TB_HDD_01/apul/trimmed/{}_R1_001.fastp-trim.20230519.fastq.gz \
+  /home/shared/8TB_HDD_01/apul/trimmed/{}_R2_001.fastp-trim.20230519.fastq.gz \
+2>&1 | tee /home/shared/8TB_HDD_02/Apul/apul-kallisto/{}.out
+```
+
+## trinity count matrix
+
+Generate a count matrix from Kallisto abundance estimates for all transcripts in RNA-seq data…
+```{bash}
+perl /home/shared/trinityrnaseq-v2.12.0/util/abundance_estimates_to_matrix.pl \
+--est_method kallisto \
+--gene_trans_map none \
+--out_prefix ~/github/coral-lncRNA/ouput/apul_count_matrix \
+--name_sample_by_basedir \
+/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/Apul/apul-kallisto/output/*/abundance.tsv
+```
+
+## lncRNA count matrix
+
+Filter to get lncRNA only count matrix...
+```{bash}
+# Specify the transcript ID file (GTF format)
+transcript_id_file="/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/apul_merged_final_lncRNAs.gtf"
+
+# Specify the count matrix file
+count_matrix_file="/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/apul_count_matrix.isoform.counts.matrix"
+
+# Specify the output file for the filtered count matrix
+filtered_count_matrix_file="/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/apul_lncRNA_count_matrix.tsv"
+
+# Extract the middle part of the transcript IDs from the GTF file
+grep -oP "(?<=transcript::)[^:]*" "$transcript_id_file" > "tmp_transcript_ids.txt"
+
+# Store the first line (column headings) of the count matrix file
+head -n 1 "$count_matrix_file" > "$filtered_count_matrix_file"
+
+# Filter the count matrix using the extracted transcript IDs, starting from the second line
+awk 'NR==FNR{a[$0];next} ($1 in a)' "tmp_transcript_ids.txt" <(tail -n +2 "$count_matrix_file") >> "$filtered_count_matrix_file"
+
+# Remove the temporary transcript ID file
+rm "tmp_transcript_ids.txt"
+```
+
+# P. meandrina
+
+## kallisto index
+
+Creating an index for kallisto abundance...
+```{bash}
+/home/shared/kallisto/kallisto \
+index -i ~/github/coral-lncRNA/ouput/Pmea/pmea-kallisto/index/pmea-kallisto.index \
+~/github/coral-lncRNA/data/Pocillopora_meandrina_HIv1.assembly.fasta
+```
+
+## kallisto abundance
+
+Transcript quantification using the Kallisto software on multiple pairs of FASTQ files…
+```{bash}
+find /home/shared/8TB_HDD_01/pmea/trimmed/*_R1_001.fastp-trim.20230519.fastq.gz \
+| xargs -n 1 basename -s _R1_001.fastp-trim.20230519.fastq.gz \
+| xargs -I{} /home/shared/kallisto/kallisto quant \
+  -i ~/github/coral-lncRNA/ouput/Pmea/pmea-kallisto/index/pmea-kallisto.index \
+  -o /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/Pmea/pmea-kallisto/output/{}_output \
+  -t 20 \
+  /home/shared/8TB_HDD_01/pmea/trimmed/{}_R1_001.fastp-trim.20230519.fastq.gz \
+  /home/shared/8TB_HDD_01/pmea/trimmed/{}_R2_001.fastp-trim.20230519.fastq.gz \
+2>&1 | tee /home/shared/8TB_HDD_02/Pmea/pmea-kallisto/{}.out
+```
+
+## trinity count matrix
+
+Generate a count matrix from Kallisto abundance estimates for all transcripts in RNA-seq data…
+```{bash}
+perl /home/shared/trinityrnaseq-v2.12.0/util/abundance_estimates_to_matrix.pl \
+--est_method kallisto \
+--gene_trans_map none \
+--out_prefix ~/github/coral-lncRNA/ouput/pmea_count_matrix \
+--name_sample_by_basedir \
+/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/Pmea/pmea-kallisto/output/*/abundance.tsv
+```
+
+## lncRNA count matrix
+
+Filter to get lncRNA only count matrix...
+```{bash}
+# Specify the transcript ID file (GTF format)
+transcript_id_file="/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/pmea_merged_final_lncRNAs.gtf"
+
+# Specify the count matrix file
+count_matrix_file="/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/pmea_count_matrix.isoform.counts.matrix"
+
+# Specify the output file for the filtered count matrix
+filtered_count_matrix_file="/home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/pmea_lncRNA_count_matrix.tsv"
+
+# Extract the middle part of the transcript IDs from the GTF file
+grep -oP "(?<=transcript::)[^:]*" "$transcript_id_file" > "tmp_transcript_ids.txt"
+
+# Store the first line (column headings) of the count matrix file
+head -n 1 "$count_matrix_file" > "$filtered_count_matrix_file"
+
+# Filter the count matrix using the extracted transcript IDs, starting from the second line
+awk 'NR==FNR{a[$0];next} ($1 in a)' "tmp_transcript_ids.txt" <(tail -n +2 "$count_matrix_file") >> "$filtered_count_matrix_file"
+
+# Remove the temporary transcript ID file
+rm "tmp_transcript_ids.txt"
+```
