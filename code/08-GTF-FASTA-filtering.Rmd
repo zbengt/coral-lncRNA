@@ -1,0 +1,78 @@
+---
+title: "08-GTF-FASTA-filtering"
+author: "Zach Bengtsson"
+date: "2023-08-10"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## P. evermanni...
+
+Get duplicate lines out of GTF file and save as new GTF...
+```{bash}
+awk '!seen[$0]++' ~/github/coral-lncRNA/ouput/peve_merged_final_lncRNAs.gtf > ~/github/coral-lncRNA/ouput/peve_deduplicated_final_lncRNAs.gtf
+
+```
+
+Format GTF to BED file...
+```{bash}
+awk -F":|-" '{print $2 "\t" $3 "\t" $4}' /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/peve_deduplicated_final_lncRNAs.gtf > /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/peve_deduplicated_final_lncRNAs.bed
+
+```
+
+Use bedtools to get lncRNA fasta...
+```{bash}
+/home/shared/bedtools2/bin/bedtools \
+getfasta -fi /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/data/Porites_evermanni_v1.fa -bed /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/peve_deduplicated_final_lncRNAs.bed -fo /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/peve_bedtools_lncRNAs.fasta -name
+
+```
+
+## A. pulchra...
+
+Get duplicate lines out of GTF file and save as new GTF...
+```{bash}
+awk '!seen[$0]++' ~/github/coral-lncRNA/ouput/apul_merged_final_lncRNAs.gtf > ~/github/coral-lncRNA/ouput/apul_deduplicated_final_lncRNAs.gtf
+
+```
+
+Format GTF to BED file...
+```{bash}
+awk -F":|-" '{print $3 "\t" $4 "\t" $5}' /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/apul_deduplicated_final_lncRNAs.gtf > /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/apul_deduplicated_final_lncRNAs.bed
+
+
+```
+
+Use bedtools to get lncRNA fasta...
+```{bash}
+/home/shared/bedtools2/bin/bedtools \
+getfasta -fi /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/data/GCF_013753865.1_Amil_v2.1_genomic.fna -bed /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/apul_deduplicated_final_lncRNAs.bed -fo /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/apul_bedtools_lncRNAs.fasta -name
+
+```
+
+## P. meandrina
+
+## A. pulchra...
+
+Get duplicate lines out of GTF file and save as new GTF...
+```{bash}
+awk '!seen[$0]++' ~/github/coral-lncRNA/ouput/pmea_merged_final_lncRNAs.gtf > ~/github/coral-lncRNA/ouput/pmea_deduplicated_final_lncRNAs.gtf
+
+```
+
+Format GTF to BED file...
+```{bash}
+awk -F":|-" '{print $3 "\t" $4 "\t" $5}' /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/pmea_deduplicated_final_lncRNAs.gtf > /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/pmea_deduplicated_final_lncRNAs.bed
+
+
+```
+
+Use bedtools to get lncRNA fasta...
+```{bash}
+/home/shared/bedtools2/bin/bedtools \
+getfasta -fi /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/data/Pocillopora_meandrina_HIv1.assembly.fasta -bed /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/pmea_deduplicated_final_lncRNAs.bed -fo /home/shared/8TB_HDD_02/zbengt/github/coral-lncRNA/ouput/pmea_bedtools_lncRNAs.fasta -name
+
+```
+
